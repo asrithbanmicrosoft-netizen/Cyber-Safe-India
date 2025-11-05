@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cyber Safe India</title>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(45deg, #0d47a1, #1976d2);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      top: 0;
+      z-index: 1000;
+      transition: box-shadow 0.3s;
+    }
+    header.scrolled { box-shadow: 0 8px 15px rgba(0,0,0,0.3); }
+
+    header h1 {
+      font-size: 2.8rem;
+      animation: fadeIn 2s ease-in-out;
+    }
+    header p {
+      font-size: 1.2rem;
+      margin-top: 8px;
+      animation: slideIn 2s ease-in-out;
+    }
+
+    /* HOME button styling */
+    header a.home-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 25px;
+      background: linear-gradient(45deg, #ff9800, #f57c00);
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 25px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    header a.home-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    section.visible { opacity: 1; transform: translateY(0); }
+
+    section h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 2.2rem;
+      color: #0d47a1;
+      position: relative;
+    }
+    section h2::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: #1976d2;
+      margin: 10px auto 0;
+      border-radius: 2px;
+    }
+
+    /* About section */
+    .about {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      transition: transform 0.5s;
+    }
+    .about:hover { transform: translateY(-5px); }
+    .about img {
+      max-width: 400px;
+      border-radius: 12px;
+      flex: 1;
+    }
+    .about-text { flex: 2; }
+    .about-text p { margin-bottom: 15px; font-size: 1rem; }
+
+    /* Law cards */
+    .laws {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+    }
+    .law-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+    .law-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .law-card h3 {
+      color: #1976d2;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* Accordion */
+    .law-item {
+      margin-bottom: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .law-title {
+      background: #e3f2fd;
+      padding: 12px 15px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .law-title i { transition: transform 0.3s; }
+    .law-title:hover { background: #bbdefb; }
+    .law-content {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 15px;
+      background: #fff;
+      font-size: 0.95em;
+      transition: max-height 0.5s ease, padding 0.3s;
+    }
+    .law-item.active .law-content {
+      max-height: 300px;
+      padding: 12px 15px;
+    }
+    .law-item.active .law-title i {
+      transform: rotate(180deg);
+    }
+
+    /* Extra adult laws */
+    .extra-laws { display: none; }
+    .show-more-btn {
+      margin-top: auto;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(45deg,#1976d2,#0d47a1);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      align-self: center;
+    }
+    .show-more-btn:hover { transform: scale(1.05); }
+
+    /* Awareness */
+    .awareness {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-top: 40px;
+    }
+    .awareness ul { margin-top: 20px; padding-left: 20px; }
+    .awareness li {
+      margin-bottom: 12px;
+      font-size: 1rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s forwards;
+    }
+    .awareness li:nth-child(1) { animation-delay: 0.2s; }
+    .awareness li:nth-child(2) { animation-delay: 0.4s; }
+    .awareness li:nth-child(3) { animation-delay: 0.6s; }
+    .awareness li:nth-child(4) { animation-delay: 0.8s; }
+    .awareness li:nth-child(5) { animation-delay: 1s; }
+
+    footer {
+      background: #0d47a1;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 30px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+    }
+
+    #robot {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      font-size: 2.5rem;
+      cursor: pointer;
+      z-index: 999;
+      transition: transform 0.1s linear;
+    }
+
+    #robot-message {
+      display: none;
+      position: absolute;
+      top: -50px;
+      left: -20px;
+      background: #1976d2;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    #back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1976d2;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    #back-to-top:hover { transform: scale(1.1); }
+
+    /* Animations */
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    @keyframes slideIn { from {transform: translateX(-100%);} to {transform: translateX(0);} }
+    @keyframes floatUp { from {transform: translateY(40px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+    @keyframes fadeInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-shield-alt"></i> Cyber Safe India</h1>
+    <p>Awareness | Education | Protection</p>
+    <a href="index.html" class="home-btn">HOME</a>
+  </header>
+
+  <br/>
+
+  <!-- Robot -->
+  <div id="robot">
+    🤖
+    <div id="robot-message">Hello! Stay informed about cyber safety and legal guidelines here.</div>
+  </div>
+
+  <!-- About Section -->
+  <section class="about">
+    <div class="about-text">
+      <h2>About Cyber Safety</h2>
+      <p>In today’s digital world, cyber safety is not just important—it’s essential.
+        Every time you use the internet, you leave behind a digital footprint that
+        can be misused if not properly protected.</p>
+      <p>Cyber safety is about protecting your personal information, avoiding online threats,
+        and understanding the legal consequences of cybercrimes. Children, teens, and adults
+        all face different online risks, so awareness is the first step to prevention.</p>
+      <p>We are committed to spreading awareness on safe online practices and India’s
+        cyber laws to help you stay secure while exploring the digital space.</p>
+    </div>
+    <img src="cyber2.jpg" alt="Cyber Security"/>
+  </section>
+
+  <!-- Cyber Laws Section -->
+  <section>
+    <h2>Cyber Laws in India by Age Group</h2>
+    <div class="laws">
+
+      <!-- Kids -->
+      <div class="law-card">
+        <h3>For Kids (Below 12)</h3>
+        <div class="law-item">
+          <div class="law-title">Section 66E – Privacy Violation <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Taking or sharing private pictures of someone without permission is punishable.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">Section 67B – Child Protection Online <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Publishing, browsing, or sharing harmful child content is strictly prohibited.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">POCSO Act <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Protects children from online sexual abuse and exploitation.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">Juvenile Justice Act <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Special protection for children involved in or victims of cybercrimes.
+          </div>
+        </div>
+      </div>
+
+      <!-- Teens -->
+      <div class="law-card">
+        <h3>For Teenagers (13 - 18)</h3>
+        <div class="law-item">
+          <div class="law-title">Cyberbullying & Harassment <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Online bullying, stalking or sending abusive messages is punishable.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">Section 66C – Identity Theft <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Using another person’s social media or email account without consent is a crime.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">Section 66D – Online Cheating <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Cheating people through impersonation, fake profiles or scams is punishable.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">Section 67 – Obscene Content <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Publishing or transmitting obscene or vulgar material online is illegal.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">Copyright Act <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Illegal downloading or sharing movies, music, or software is punishable.
+          </div>
+        </div>
+      </div>
+
+      <!-- Adults -->
+      <div class="law-card">
+        <h3>For Adults (18+)</h3>
+        <div class="law-item">
+          <div class="law-title">Section 43 – Unauthorized Access <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Accessing or downloading data without permission, introducing malware.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">Section 65 – Tampering with Source Code <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Tampering, destroying or concealing computer source code is a crime.
+          </div>
+        </div>
+        <div class="law-item">
+          <div class="law-title">Section 66F – Cyber Terrorism <i class="fas fa-chevron-down"></i></div>
+          <div class="law-content">
+            Any cyber activity that threatens India’s sovereignty, integrity or security.
+          </div>
+        </div>
+
+        <!-- Hidden Extra Laws -->
+        <div class="extra-laws">
+          <div class="law-item">
+            <div class="law-title">Section 67A – Sexually Explicit Content <i class="fas fa-chevron-down"></i></div>
+            <div class="law-content">
+              Publishing or transmitting sexually explicit content online is punishable.
+            </div>
+          </div>
+          <div class="law-item">
+            <div class="law-title">Section 69 – Government Powers <i class="fas fa-chevron-down"></i></div>
+            <div class="law-content">
+              Government can intercept, monitor, and decrypt online communications in specific cases.
+            </div>
+          </div>
+          <div class="law-item">
+            <div class="law-title">Section 70 – Protected Systems <i class="fas fa-chevron-down"></i></div>
+            <div class="law-content">
+              Unauthorized access to critical systems like defense, banking, government servers is illegal.
+            </div>
+          </div>
+          <div class="law-item">
+            <div class="law-title">Section 72 – Breach of Confidentiality <i class="fas fa-chevron-down"></i></div>
+            <div class="law-content">
+              Officials disclosing personal information without consent is punishable.
+            </div>
+          </div>
+          <div class="law-item">
+            <div class="law-title">Section 73 & 74 – Fraudulent Certificates <i class="fas fa-chevron-down"></i></div>
+            <div class="law-content">
+              Publishing false digital signatures or fraudulent certificates is a crime.
+            </div>
+          </div>
+          <div class="law-item">
+            <div class="law-title">Section 75 – Extraterritorial Jurisdiction <i class="fas fa-chevron-down"></i></div>
+            <div class="law-content">
+              Offenses committed outside India but affecting Indian citizens are punishable.
+            </div>
+          </div>
+          <div class="law-item">
+            <div class="law-title">Section 77 – Penalties <i class="fas fa-chevron-down"></i></div>
+            <div class="law-content">
+              Defines penalties and rules for compounding cyber offenses.
+            </div>
+          </div>
+        </div>
+
+        <button class="show-more-btn" type="button">Show More</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Awareness Section -->
+  <section class="awareness">
+    <h2>Cyber Safety Awareness Tips</h2>
+    <ul>
+      <li><i class="fas fa-lock"></i> Never share OTPs or passwords with anyone.</li>
+      <li><i class="fas fa-link"></i> Always verify links before clicking — phishing sites look similar to real ones.</li>
+      <li><i class="fas fa-shield-virus"></i> Install antivirus and keep your devices updated.</li>
+      <li><i class="fas fa-user-shield"></i> Report cybercrimes immediately on <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a>.</li>
+      <li><i class="fas fa-key"></i> Use strong passwords and enable 2-factor authentication wherever possible.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>© 2025 Cyber Safe India | Stay Aware, Stay Secure</p>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <div id="back-to-top"><i class="fas fa-arrow-up"></i></div>
+
+  <script>
+    // Accordion effect
+    document.querySelectorAll('.law-title').forEach(item => {
+      item.addEventListener('click', () => {
+        item.parentElement.classList.toggle('active');
+      });
+    });
+
+    // Show More/Less for extra adult laws
+    const showMoreBtn = document.querySelector('.show-more-btn');
+    const extraLaws = document.querySelector('.extra-laws');
+    if (showMoreBtn && extraLaws) {
+      showMoreBtn.addEventListener('click', () => {
+        const isOpen = extraLaws.style.display === 'block';
+        extraLaws.style.display = isOpen ? 'none' : 'block';
+        showMoreBtn.textContent = isOpen ? 'Show More' : 'Show Less';
+      });
+    }
+
+    // Robot movement
+    const robot = document.getElementById('robot');
+    const message = document.getElementById('robot-message');
+    let x = 0, y = 50, dx = 1, dy = 1, interval = null;
+    function moveRobot() {
+      const windowWidth = window.innerWidth - 50;
+      const windowHeight = window.innerHeight - 50;
+      x += dx; y += dy;
+      if (x >= windowWidth || x <= 0) dx = -dx;
+      if (y >= windowHeight || y <= 0) dy = -dy;
+      robot.style.left = x + 'px';
+      robot.style.top = y + 'px';
+    }
+    interval = setInterval(moveRobot, 20);
+    robot.addEventListener('click', () => {
+      clearInterval(interval);
+      message.style.display = 'block';
+      setTimeout(() => {
+        message.style.display = 'none';
+        interval = setInterval(moveRobot, 20);
+      }, 2000);
+    });
+
+    // Section scroll animation
+    const sections = document.querySelectorAll('section');
+    window.addEventListener('scroll', () => {
+      sections.forEach(sec => {
+        if(sec.getBoundingClientRect().top < window.innerHeight - 100){
+          sec.classList.add('visible');
+        }
+      });
+
+      // Sticky header shadow
+      const header = document.querySelector('header');
+      if(window.scrollY > 20) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+
+      // Back to top button
+      const backTop = document.getElementById('back-to-top');
+      if(window.scrollY > 300) backTop.style.display = 'block';
+      else backTop.style.display = 'none';
+    });
+
+    // Back to top click
+    document.getElementById('back-to-top').addEventListener('click', () => {
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  </script>
+</body>
+</html>
